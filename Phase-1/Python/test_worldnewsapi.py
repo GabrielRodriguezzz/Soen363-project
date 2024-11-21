@@ -12,7 +12,7 @@ try:
 
     # Fetch a single article
     response = api_instance.search_news(
-        text="technology",
+        text="news",
         language="en",
         number=1  # Request only one article
     )
@@ -20,7 +20,8 @@ try:
     # Print the title of the first article
     if response.news:
         article = response.news[0]  # Access the first article
-        print("Title: " + str(article.title))
+        print("Response available: " + response.available)
+        print("Response news: " + response.news)
     else:
         print("No articles found.")
 
