@@ -1,10 +1,10 @@
-CREATE TABLE IF NOT EXISTS article (
+CREATE TABLE IF NOT EXISTS article_newsAPI (
     id SERIAL PRIMARY KEY, 
-    source_id INT REFERENCES source (id) ON DELETE SET NULL, 
-    author VARCHAR(255), 
+    source source_type, 
+    author_id INT REFERENCES authors(id) ON DELETE SET NULL, 
     title VARCHAR(255) NOT NULL, 
     description TEXT, 
-    url TEXT NOT NULL, 
+    url url_domain, 
     url_to_image TEXT, 
     published_at TIMESTAMP, 
     content TEXT 

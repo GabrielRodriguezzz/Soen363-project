@@ -1,5 +1,4 @@
-CREATE TABLE IF NOT EXISTS source (
-    id SERIAL PRIMARY KEY, 
-    source_name VARCHAR(255) NOT NULL,
-    source_api_id VARCHAR(255) DEFAULT NULL 
+CREATE TYPE source_type AS (
+    id INT, 
+    name VARCHAR(255)
 );
