@@ -5,6 +5,10 @@ from datetime import datetime
 
 # Replace with your API key
 WORLD_NEWS_API_KEY = "ccb52ac45e2945a097e69b248259f242"
+#Current offset, change to avoid duplicates (look at file names)
+offset = 2300
+#current used query (very broad)
+text_query = "news"
 
 # Configure API
 config = worldnewsapi.Configuration(api_key={"apiKey": WORLD_NEWS_API_KEY})
@@ -27,7 +31,7 @@ def fetch_articles(text, language, max_articles=500, number_per_request=100):
     :param max_articles: Total number of articles to fetch.
     :param number_per_request: Number of articles per API request.
     """
-    offset = 2300 #Current offset, change to avoid duplicates
+    #offset = 2300 #Current offset, change to avoid duplicates
     all_articles = []
 
     while len(all_articles) < max_articles:
@@ -85,8 +89,8 @@ def fetch_articles(text, language, max_articles=500, number_per_request=100):
 
 # Example Usage
 fetch_articles(
-    text="news",  # Broad query
+    text=text_query, 
     language="en",  # English language
     max_articles=2000,  # Adjust to limit the number of articles
-    number_per_request=100  # Fetch in batches of 10
+    number_per_request=100  # Fetch in batches of 100 (max for API)
 )
