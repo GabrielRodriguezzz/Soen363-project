@@ -4,9 +4,7 @@ import json
 from datetime import datetime
 
 # Replace with your API key
-WORLD_NEWS_API_KEY = "ccb52ac45e2945a097e69b248259f242"
-#Current offset, change to avoid duplicates (look at file names)
-offset = 2300
+WORLD_NEWS_API_KEY = "72aaeff0745f46a189e07cb41c630e7f"
 #current used query (very broad)
 text_query = "news"
 
@@ -31,7 +29,7 @@ def fetch_articles(text, language, max_articles=500, number_per_request=100):
     :param max_articles: Total number of articles to fetch.
     :param number_per_request: Number of articles per API request.
     """
-    #offset = 2300 #Current offset, change to avoid duplicates
+    offset = 7300 #Current offset, change to avoid duplicates
     all_articles = []
 
     while len(all_articles) < max_articles:
@@ -83,9 +81,9 @@ def fetch_articles(text, language, max_articles=500, number_per_request=100):
             print(f"Exception when calling NewsApi->search_news: {e}")
             break
     # Save all fetched articles to a JSON file
-    new_offset = max_articles + offset
-    save_articles_to_json(all_articles, file_prefix=f"articles_{text}", offset=offset, new_offset=new_offset)
-    print("Available articles: " + response.available - new_offset)
+    old_offset = offset - max_articles
+    save_articles_to_json(all_articles, file_prefix=f"articles_{text}", offset=old_offset, new_offset=offset)
+    print("Available articles: " + str(response.available - offset))
 
 # Example Usage
 fetch_articles(
