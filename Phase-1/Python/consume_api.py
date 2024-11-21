@@ -9,7 +9,6 @@ query = "Cybersecurity"
 # Base URL for NewsAPI
 BASE_URL = "https://newsapi.org/v2/everything"
 
-
 # File to save articles
 ARTICLES_FILE = "articles.json"
 
@@ -46,7 +45,7 @@ def fetch_articles_for_date_range(from_date, to_date):
         return articles
     else:
         print(f"Error: {response.status_code}, {response.text}")
-        return []
+        return None  # Return None instead of an empty list to signal an error
 
 # Helper function to check for duplicates
 def is_duplicate(article, all_articles):
@@ -62,6 +61,12 @@ while start_date <= current_date:
     # Fetch articles for the current date range
     articles = fetch_articles_for_date_range(from_date, to_date)
     api_calls_made += 1  # Increment API call counter
+
+    # Skip processing if there was an error in the API call
+    if articles is None:
+        print(f"Skipping {from_date} to {to_date} due to API error.")
+        start_date += timedelta(days=1)
+        continue
 
     # Filter out duplicates
     new_articles = [article for article in articles if not is_duplicate(article, all_articles)]
