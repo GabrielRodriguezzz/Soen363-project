@@ -91,6 +91,6 @@ def fetch_articles(text, language, max_articles=500, number_per_request=100):
 fetch_articles(
     text=text_query, 
     language="en",  # English language
-    max_articles=2000,  # Adjust to limit the number of articles
+    max_articles=2500,  # Adjust to limit the number of articles (maximum for a empty key, adjust to 2400 if necessary)
     number_per_request=100  # Fetch in batches of 100 (max for API)
 )
