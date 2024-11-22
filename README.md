@@ -2,24 +2,20 @@
 
 ## Team Members
 - **Gabriel Rodriguez 40208888**
-- **Member 2**
-- **Member 3**
-- **Member 4**
+- **Ali Zedan 40174606**
+- **Abdelmalek Mohamou 40255934**
+- **Ryan Rebbas 40180237**
 
 ---
 
 ## Phase 1: Overview
 **Objective**: Create a relational database for news article data.   
 **Key Features**:
-1. Feature 1
-2. Feature 2
-3. Feature 3
+1. DDL files for the database definition
+2. DML files for the database population
+3. DQL files for the database queries
 
 **Status**: In Progress
-**Milestones**:
-- Milestone 1: Description
-- Milestone 2: Description
-- Milestone 3: Description
 
 ---
 
@@ -31,10 +27,7 @@
 3. Feature 3
 
 **Status**: Complete / In Progress / Planned  
-**Milestones**:
-- Milestone 1: Description
-- Milestone 2: Description
-- Milestone 3: Description
+
 
 ---
 
@@ -75,4 +68,7 @@ pip install -r requirements.txt
 
 ## Links
 - **Public APIs**: 
+[NewsAPI](https://newsapi.org/docs)
+
+[WorldNewsAPI](https://worldnewsapi.com/docs/)
 
