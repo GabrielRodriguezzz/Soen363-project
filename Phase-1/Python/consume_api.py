@@ -3,14 +3,14 @@ import json
 from datetime import datetime, timedelta
 
 # Replace with your NewsAPI key
-API_KEY = "acac41312fa34390aa42c3e984b44d46"
-query = "Cybersecurity"
+API_KEY = "725d70fc40fe46039afe18de656d1f6e"
+query = "E-commerce"
 
 # Base URL for NewsAPI
 BASE_URL = "https://newsapi.org/v2/everything"
 
 # File to save articles
-ARTICLES_FILE = "articles.json"
+ARTICLES_FILE = "./newsApi_json/articles6.json"
 
 # Get current date and subtract 29 days
 current_date = datetime.now()
