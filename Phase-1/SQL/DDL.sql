@@ -18,7 +18,8 @@ CREATE TYPE source_type AS (
     name VARCHAR(255)
 );
 
-CREATE TABLE IF NOT EXISTS article_worldNews (
+CREATE TABLE IF NOT EXISTS article_worldNewsAPI (
+    article_id INT,
     summary TEXT, 
     text TEXT, 
     image TEXT, 
