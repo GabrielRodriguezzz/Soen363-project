@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS article_worldNews (
     publish_date TIMESTAMP, 
     source_country TEXT, 
     language TEXT, 
-    sentiment DECIMAL(4, 3) CHECK (sentiment >= -1 AND sentiment <= 1), 
+    sentiment DECIMAL(4, 3), 
     category TEXT
 );
 
@@ -38,5 +38,19 @@ CREATE TABLE IF NOT EXISTS article_newsAPI (
     published_at TIMESTAMP, 
     content TEXT 
 );
+
+CREATE OR REPLACE FUNCTION check_sentiment_range()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.sentiment < -1 OR NEW.sentiment > 1 THEN
+        RAISE EXCEPTION 'Sentiment value must be between -1 and 1. Given value: %', NEW.sentiment;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+CREATE TRIGGER validate_sentiment
+BEFORE INSERT OR UPDATE ON article_worldNews
+FOR EACH ROW
+EXECUTE FUNCTION check_sentiment_range();
 
 
