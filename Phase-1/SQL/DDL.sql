@@ -1,6 +1,6 @@
 
 CREATE DOMAIN url_domain AS TEXT
-    CHECK (VALUE ~* '^https?://');
+    CHECK (TRIM(LEADING FROM VALUE) ~* '^https?://');
 
 CREATE TABLE IF NOT EXISTS authors (
     id SERIAL PRIMARY KEY,
