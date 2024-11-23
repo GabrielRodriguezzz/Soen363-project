@@ -53,6 +53,6 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER validate_sentiment
-BEFORE INSERT OR UPDATE ON article_worldNews
+BEFORE INSERT OR UPDATE ON article_worldNewsAPI
 FOR EACH ROW
 EXECUTE FUNCTION check_sentiment_range();
