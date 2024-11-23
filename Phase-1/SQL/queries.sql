@@ -90,3 +90,21 @@ FULL OUTER JOIN
 
 
 
+
+--A few queries to demonstrate use of Null values for undefined / non-applicable
+--SQL QUERY MISSING HERE
+
+
+
+--A couple of examples to demonstrate correlated queries.
+--Find articles in article_worldNewsAPI that have a higher sentiment than the average sentiment of all articles in the same category
+SELECT aw.id, aw.title, aw.category, aw.sentiment
+FROM article_worldNewsAPI aw
+WHERE aw.sentiment > (
+    SELECT AVG(sub_aw.sentiment)
+    FROM article_worldNewsAPI sub_aw
+    WHERE sub_aw.category = aw.category
+);
+
+--ANOTHER EXAMPLE MUST BE ADDED HERE
+
