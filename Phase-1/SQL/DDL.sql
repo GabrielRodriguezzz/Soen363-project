@@ -1,16 +1,14 @@
 CREATE DOMAIN url_domain AS TEXT
     CHECK (TRIM(LEADING FROM VALUE) ~* '^https?://');
 
-CREATE TABLE IF NOT EXISTS authors (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE
-);
+
 
 CREATE TABLE IF NOT EXISTS article (
     id SERIAL PRIMARY KEY, 
-    title TEXT NOT NULL, 
+    title TEXT NOT NULL unique, 
     url url_domain, 
-    publish_date TIMESTAMP
+    publish_date TIMESTAMP,
+    author TEXT
 );
 
 CREATE TYPE source_type AS (
@@ -36,11 +34,7 @@ CREATE TABLE IF NOT EXISTS article_newsAPI (
     content TEXT
 ) INHERITS (article);
 
-CREATE TABLE IF NOT EXISTS author_article (
-    author_id INT NOT NULL REFERENCES authors(id) ON DELETE CASCADE,
-    article_id INT NOT NULL REFERENCES article(id) ON DELETE CASCADE,
-    PRIMARY KEY (author_id, article_id)
-);
+
 
 CREATE OR REPLACE FUNCTION check_sentiment_range()
 RETURNS TRIGGER AS $$

@@ -18,7 +18,6 @@ def insert_authors(cursor, authors):
     # Split the authors string by commas and strip whitespace
     authors = [author.strip() for author in authors.split(",")]
     author_ids = []
-    print(authors)
     for author_name in authors:
         if author_name:  # Skip empty strings if there's any
             try:
@@ -44,37 +43,42 @@ def insert_authors(cursor, authors):
                         author_ids.append(result[0])  # Add the existing author id to the list
 
             except Exception as e:
-                print(f"Error inserting author {author_name}: {e}")
-    
+                print(f"Error inserting author {author_name}: {e}") 
     return author_ids
 
 
-def insert_article_author(cursor,authors,article_id):
+def insert_article_author(cursor,authors,article_id,title):
     author_ids =None
-    if authors is not None:
+
+    if authors is not None and article_id is not None:
         author_ids = insert_authors(cursor, authors) 
     
-  
+
         # Now, insert the many-to-many relationships between authors and articles
         for author_id in author_ids:
             try:
                 cursor.execute("""
                     INSERT INTO author_article (author_id, article_id)
                     VALUES (%s, %s)
-                    ON CONFLICT (author_id, article_id) DO NOTHING
                 """, (author_id, article_id))
             except Exception as e:
                 print(f"Error linking author {author_id} to article {article_id}: {e}")
+                print(authors)
+                print(title)
                 return False  # Return False to indicate failure
     return True
 
 
 # Function to insert article into article_worldNews table
-def insert_article_worldNews(cursor, article):
+def insert_article_worldNews(cursor, article,conn):
     article_id=None
+    authors=None
+    if article['author'] is not None:
+        authors = [author.strip() for author in article['author'].split(",")]
+    print(authors)
     try:
         cursor.execute("""
-            INSERT INTO public.article_worldnewsapi
+            INSERT INTO article_worldnewsapi
                        ( title, url, publish_date, article_id, summary, text, image, source_country, language, sentiment, category)
 	        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING id
@@ -91,28 +95,45 @@ def insert_article_worldNews(cursor, article):
             article.get('sentiment'),
             article.get('category')
         ))
-        article_id= cursor.fetchone()
+        cursor.execute("SELECT id FROM article WHERE title = %s", (article['title'],))
+        article_id = cursor.fetchone()
+        if article_id:
+            article_id= article_id[0]
+            print(article_id)
+            conn.commit()
+            if authors is not None:
+                for author in authors:
+                    print(author)
+                    cursor.execute("SELECT id FROM authors WHERE name = %s", (author,))
+                    author_id = cursor.fetchone()
+                    if not author_id:
+                        cursor.execute("INSERT INTO authors (name) VALUES (%s)  ON CONFLICT (name) DO NOTHING RETURNING id  ", (author,))
+                        author_id = cursor.fetchone()[0]
+                    
+                    cursor.execute("INSERT INTO author_article (author_id, article_id) VALUES (%s, %s)", (author_id,article_id))
+        
     except Exception as e:
         print(f"Error inserting article from worldNews {article['id']}: {e}")
         return False  # Return False to indicate failure
-    if article["author"] is not None:
-        author_ids = insert_authors(cursor, article["author"])
-    return True #insert_article_author(cursor,article['author'],article_id)
+    return True
    
 
 
 # Function to insert article into article_newsAPI table
-def insert_article_newsAPI(cursor, article):
+def insert_article_newsAPI(cursor, article,conn):
     source_id = article['source']['id'] if article['source']['id'] is not None else None
     source_name = article['source']['name']
     source = (str(source_id) if source_id else None, source_name)  # Ensure id is a string
     article_id=None
+    authors=None
+    if article['author'] is not None:
+        authors = [author.strip() for author in article['author'].split(",")]
+    print(authors)
     try:
         cursor.execute("""
-            INSERT INTO public.article_newsapi
+            INSERT INTO article_newsapi
             (title, url, publish_date, source, description, url_to_image, content)
 	        VALUES (%s, %s, %s, %s, %s, %s, %s)
-            RETURNING id
         """, (
             article['title'],
             article['url'],
@@ -122,14 +143,28 @@ def insert_article_newsAPI(cursor, article):
             article.get('urlToImage'),
             article.get('content')
         ))
+        cursor.execute("SELECT id FROM articles WHERE title = %s", (article['title'],))
         article_id = cursor.fetchone()
+        if article_id:
+            article_id= article_id[0]
+            conn.commit()
+            if authors is not None:
+                for author in authors:
+                    print(author)
+                    cursor.execute("SELECT id FROM authors WHERE name = %s", (author,))
+                    author_id = cursor.fetchone()
+                    
+                    if not author_id:
+                        cursor.execute("INSERT INTO authors (name) VALUES (%s) ON CONFLICT (name) DO NOTHING RETURNING id", (author,))
+                        author_id = cursor.fetchone()[0]
+            
+            cursor.execute("INSERT INTO author_article (author_id, article_id) VALUES (%s, %s)", (author_id,article_id))
+        
     except Exception as e:
         print(f"Error inserting article from newsAPI {article['id']}: {e}")
         return False  # Return False to indicate failure
-    if article["author"] is not None:
-        author_ids = insert_authors(cursor, article["author"])
 
-    return True #insert_article_author(cursor,article['author'],article_id)
+    return True#insert_article_author(cursor,article['author'],article_id,article["title"])
 
 # Main function to load JSON and insert data into tables
 def load_json_to_db(json_file):
@@ -143,9 +178,9 @@ def load_json_to_db(json_file):
         for article in data:
             try:
                 if 'source' in article:
-                    success = insert_article_newsAPI(cursor, article)
+                    success = insert_article_newsAPI(cursor, article,conn)
                 else: 
-                    success = insert_article_worldNews(cursor, article)
+                    success = insert_article_worldNews(cursor, article,conn)
 
                 # If any insertion failed, roll back the transaction
                 if not success:
