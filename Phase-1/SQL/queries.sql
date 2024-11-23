@@ -92,12 +92,18 @@ FULL OUTER JOIN
 
 
 --A few queries to demonstrate use of Null values for undefined / non-applicable
---SQL QUERY MISSING HERE
+SELECT id, title, publish_date, category 
+FROM article_worldNewsAPI 
+WHERE category IS NULL;
+
+SELECT id, title, publish_date, author 
+FROM article 
+WHERE author IS NULL;
+
 
 
 
 --A couple of examples to demonstrate correlated queries.
---Find articles in article_worldNewsAPI that have a higher sentiment than the average sentiment of all articles in the same category
 SELECT aw.id, aw.title, aw.category, aw.sentiment
 FROM article_worldNewsAPI aw
 WHERE aw.sentiment > (
@@ -106,5 +112,116 @@ WHERE aw.sentiment > (
     WHERE sub_aw.category = aw.category
 );
 
---ANOTHER EXAMPLE MUST BE ADDED HERE
+SELECT id, title, category, publish_date 
+FROM article_worldNewsAPI a1 
+WHERE publish_date = (
+    SELECT MAX(publish_date) 
+    FROM article_worldNewsAPI a2 
+    WHERE a1.category = a2.category
+);
+
+
+-- Set operations
+
+-- Intersect
+SELECT author 
+FROM article_worldNewsAPI 
+INTERSECT 
+SELECT author 
+FROM article_newsAPI;
+
+SELECT a1.author, a1.title 
+FROM article_worldNewsAPI a1 
+INNER JOIN article_newsAPI a2 
+ON a1.author = a2.author;
+
+-- Union
+SELECT id, title 
+FROM article_worldNewsAPI 
+UNION 
+SELECT id, title 
+FROM article_newsAPI;
+
+SELECT id, title
+FROM article_worldNewsAPI
+WHERE TRUE 
+OR id IN (
+    SELECT id
+    FROM article_newsAPI
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM article_worldNewsAPI
+        WHERE article_worldNewsAPI.id = article_newsAPI.id
+          AND article_worldNewsAPI.title = article_newsAPI.title
+    )
+);
+
+-- Difference
+SELECT id, title
+FROM article_worldNewsAPI
+EXCEPT
+SELECT id, title
+FROM article_newsAPI;
+
+SELECT a.id, a.title
+FROM article_worldNewsAPI a
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM article_newsAPI b
+    WHERE a.id = b.id AND a.title = b.title
+);
+
+
+-- View with hard coded criteria
+CREATE VIEW hard_coded AS
+(SELECT * FROM article_worldNewsAPI WHERE article_id = 265762636);
+
+
+-- Queries with overlap and convering constraints
+
+-- overlap
+SELECT w.id, w.url, n.id AS news_id, n.url AS news_url
+FROM article_worldNewsAPI w
+JOIN article_newsAPI n
+ON w.url = n.url;
+
+-- covering
+SELECT id
+FROM article
+WHERE id NOT IN (
+    SELECT w.id
+    FROM article_worldNewsAPI w
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM article_newsAPI n
+        WHERE w.id = n.id
+    )
+);
+
+-- Division operator
+-- NOT IN
+SELECT a.id, a.title
+FROM article a
+WHERE NOT EXISTS (
+    SELECT category
+    FROM article_worldNewsAPI
+    WHERE category NOT IN (
+        SELECT category
+        FROM article_worldNewsAPI w
+        WHERE w.id = a.id
+    )
+);
+-- NOT EXISTS and EXCEPT
+SELECT a.author
+FROM article a
+WHERE NOT EXISTS (
+    SELECT language
+    FROM article_worldNewsAPI
+    EXCEPT
+    (
+        SELECT DISTINCT w.language
+        FROM article_worldNewsAPI w
+        WHERE w.author = a.author
+    )
+);
 
