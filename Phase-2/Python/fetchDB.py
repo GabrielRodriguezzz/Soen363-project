@@ -59,7 +59,7 @@ def fetch_all_articles():
                 'url_to_image': article[7],
                 'content': article[8]
             }
-            newsAPI_articles.append(article_data)
+            news_api_articles.append(article_data)
         populate_subcollection("articlesNewsAPI",news_api_articles)
 
 
