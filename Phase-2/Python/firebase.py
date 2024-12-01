@@ -31,4 +31,19 @@ def count_by_sentiment(threshold):
     for aggregation_list in count_result:  
         for aggregation in aggregation_list:  
             print(f"Number of articles with sentiment >= {threshold}: {aggregation.value}")
+def find_top_n_latest_articles_after_date(n, start_date):
+    query = (
+        db.collection("articlesWorldnewsAPI")
+        .where("publish_date", ">", start_date) 
+        .order_by("publish_date", direction=firestore.Query.DESCENDING)  
+        .limit(n) 
+    )
+    results = query.stream()
+    data = []
+    print(f"Top {n} articles published after {start_date}:")
+    for doc in results:
+        article = doc.to_dict()
+        data.append(article)
+    print("{} articles with published date after {} ordered by descending order".format(n, start_date))
+    print(data)
        
