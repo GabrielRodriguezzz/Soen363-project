@@ -11,6 +11,8 @@ if __name__ == "__main__":
     #search_by_country("ca")
     #A query that provides some aggregate data (i.e. number of entities satisfying a criteria)
     #count_by_sentiment(0.6)
+    #Find top n entities satisfying a criteria, sorted by an attribute.
+    #find_top_n_latest_articles_after_date(5, "2024-11-06T00:00:00Z")
     print("")
 
 
