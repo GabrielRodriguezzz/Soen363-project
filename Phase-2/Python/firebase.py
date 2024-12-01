@@ -46,4 +46,18 @@ def find_top_n_latest_articles_after_date(n, start_date):
         data.append(article)
     print("{} articles with published date after {} ordered by descending order".format(n, start_date))
     print(data)
+def aggregate_articles_by_category():
+    query = db.collection("articlesWorldnewsAPI")
+    results = query.stream()
+
+    category_counts = {}
+
+    for doc in results:
+        article = doc.to_dict()
+        category = article.get("category", "Uncategorized")  
+        category_counts[category] = category_counts.get(category, 0) + 1
+
+    print("Article counts per category:")
+    for category, count in category_counts.items():
+        print(f"Category: {category}, Count: {count}")  
        
