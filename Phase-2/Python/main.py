@@ -13,6 +13,8 @@ if __name__ == "__main__":
     #count_by_sentiment(0.6)
     #Find top n entities satisfying a criteria, sorted by an attribute.
     #find_top_n_latest_articles_after_date(5, "2024-11-06T00:00:00Z")
+    #Simulate a relational group by query in NoSQL (aggregate per category).
+    #aggregate_articles_by_category()
     print("")
 
 
