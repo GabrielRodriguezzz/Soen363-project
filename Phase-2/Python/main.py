@@ -15,6 +15,15 @@ if __name__ == "__main__":
     #find_top_n_latest_articles_after_date(5, "2024-11-06T00:00:00Z")
     #Simulate a relational group by query in NoSQL (aggregate per category).
     #aggregate_articles_by_category()
+    #timed_query(count_by_sentiment, 0.6)
+    #timed_query(find_top_n_latest_articles_after_date, 5, "2024-11-06T00:00:00Z")
+    #timed_query(aggregate_articles_by_category)
+    #timed_query(search_by_country, "ca")
+
+    #timed_full_text_search("climate change")
+
+    # After creating the index
+    #timed_full_text_search("climate change")
     print("")
 
 
