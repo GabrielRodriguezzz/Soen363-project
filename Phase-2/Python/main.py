@@ -1,6 +1,7 @@
 from fetchDB import fetch_all_articles
 from firebase import search_by_country
 from firebase import count_by_sentiment
+from firebase import *
 
 
 
