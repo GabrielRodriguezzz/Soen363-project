@@ -93,6 +93,54 @@ def timed_full_text_search(keyword):
     print(f"Execution time for '{keyword}': {end_time - start_time:.4f} seconds")
     return results
 
+def add_search_terms_to_articles(subcollection_name):
+    query = db.collection(subcollection_name).stream()
+    for doc in query:
+        data = doc.to_dict()
+        search_terms = f"{data.get('title', '').lower()} {data.get('summary', '').lower()}"
+        try:
+            db.collection(subcollection_name).document(doc.id).update({"search_terms": search_terms})
+            print(f"Updated document {doc.id} with search_terms")
+        except Exception as e:
+            print(f"Error updating document {doc.id}: {e}")
+
+def full_text_search(keyword):
+    keyword = keyword.lower()
+    try:
+        query = db.collection("articlesWorldnewsAPI") \
+            .where("search_terms", ">=", keyword) \
+            .where("search_terms", "<=", keyword + "\uf8ff")
+        results = query.stream()
+        data = [doc.to_dict() for doc in results]
+        print(f"Results for '{keyword}': {len(data)} articles found")
+        return data
+    except Exception as e:
+        print(f"Error executing full-text search: {e}")
+        return []
+
+
+def full_text_search(keyword):
+    keyword = keyword.lower()
+    try:
+        query = db.collection("articlesWorldnewsAPI") \
+            .where("search_terms", ">=", keyword) \
+            .where("search_terms", "<=", keyword + "\uf8ff")
+        results = query.stream()
+        data = [doc.to_dict() for doc in results]
+        print(f"Results for '{keyword}': {len(data)} articles found")
+        return data
+    except Exception as e:
+        print(f"Error executing full-text search: {e}")
+        return []
+
+def timed_full_text_search(keyword):
+    start_time = time.time()
+    results = full_text_search(keyword)
+    end_time = time.time()
+    print(f"Execution time for '{keyword}': {end_time - start_time:.4f} seconds")
+    return results
+
+
 
 
 
