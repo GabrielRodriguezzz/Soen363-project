@@ -60,4 +60,41 @@ def aggregate_articles_by_category():
     print("Article counts per category:")
     for category, count in category_counts.items():
         print(f"Category: {category}, Count: {count}")  
+
+
+def timed_query(query_function, *args):
+    start_time = time.time()
+    query_function(*args)  
+    end_time = time.time()
+    print(f"Execution time: {end_time - start_time:.4f} seconds")
+
+def add_search_terms_to_articles(subcollection_name):
+    query = db.collection(subcollection_name).stream()
+    for doc in query:
+        data = doc.to_dict()
+        search_terms = f"{data.get('title', '').lower()} {data.get('summary', '').lower()}"
+        db.collection(subcollection_name).document(doc.id).update({"search_terms": search_terms})
+
+def full_text_search(keyword):
+    keyword = keyword.lower()  
+    query = db.collection("articlesWorldnewsAPI").where("search_terms", ">=", keyword).where("search_terms", "<=", keyword + "\uf8ff")
+    results = query.stream()
+    data = []
+    for doc in results:
+        data.append(doc.to_dict())
+    print(f"Results for '{keyword}': {len(data)} articles found")
+    return data
+
+
+def timed_full_text_search(keyword):
+    start_time = time.time()
+    results = full_text_search(keyword)
+    end_time = time.time()
+    print(f"Execution time for '{keyword}': {end_time - start_time:.4f} seconds")
+    return results
+
+
+
+
+
        
