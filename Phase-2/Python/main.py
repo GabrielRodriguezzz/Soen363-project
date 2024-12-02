@@ -21,7 +21,8 @@ if __name__ == "__main__":
     #timed_query(aggregate_articles_by_category)
     #timed_query(search_by_country, "ca")
 
-    #timed_full_text_search("climate change")
+    #timed_full_text_search("Trump")
+
 
     # After creating the index
     #timed_full_text_search("climate change")
