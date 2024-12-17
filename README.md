@@ -15,18 +15,17 @@
 2. DML files for the database population
 3. DQL files for the database queries
 
-**Status**: In Progress
+**Status**: Complete
 
 ---
 
 ## Phase 2: Overview
 **Objective**: Brief description of the goals and deliverables of Phase 2.  
 **Key Features**:
-1. Feature 1
-2. Feature 2
-3. Feature 3
+1. Transfering SQL data
+2. Querying Firebase
 
-**Status**: Complete / In Progress / Planned  
+**Status**: Complete  
 
 
 ---
